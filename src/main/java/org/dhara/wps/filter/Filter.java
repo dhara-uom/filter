@@ -1,10 +1,7 @@
 package org.dhara.wps.filter;
 
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.*;
 import org.apache.axiom.om.util.AXIOMUtil;
 
 import javax.xml.namespace.QName;
@@ -21,8 +18,10 @@ import java.util.Iterator;
  */
 public class Filter {
     public static void main(String[] args) {
-        String everything=args[0];
-        try {
+        String everything=FileHandle.read(args[0]) ;
+
+
+
         /*    BufferedReader br = new BufferedReader(new FileReader("out3.txt"));
             try {
                 StringBuilder sb = new StringBuilder();
@@ -38,34 +37,31 @@ public class Filter {
                 br.close();
             }*/
 
-            OMElement omElement= AXIOMUtil.stringToOM(everything);
-            OMElement description=omElement.getFirstChildWithName(new QName("http://airavata.apache.org/schemas/wft/2011/08", "description", "ns"));
-            OMElement executeResponse=description.getFirstChildWithName(new QName("http://www.opengis.net/wps/1.0.0", "ExecuteResponse", "ns"));
-            OMElement processOuts=executeResponse.getFirstChildWithName(new QName("http://www.opengis.net/wps/1.0.0","ProcessOutputs","ns"));
-            OMElement outPut=processOuts.getFirstElement();
-            OMElement data=outPut.getFirstChildWithName(new QName("http://www.opengis.net/wps/1.0.0","Data","ns"));
-            OMElement complexData=data.getFirstElement();
-            OMElement featureCollection=complexData.getFirstElement();
-            OMFactory factory= OMAbstractFactory.getOMFactory();
-            OMNamespace poNs= factory.createOMNamespace("http //www.w3.org/1999/xhtml", "xmlns");
-            featureCollection.addAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance",null);
-            File file = new File("gmlOut.xml");
-            BufferedWriter output = new BufferedWriter(new FileWriter(file));
-            output.write(featureCollection.toString());
-            output.close();
-            //System.out.println(featureCollection.toString());
+
+
+        OMElement omElement= null;
+        try {
+            omElement = AXIOMUtil.stringToOM(everything);
         } catch (XMLStreamException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        /*} catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.*/
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+        //  OMElement description=omElement.getFirstChildWithName(new QName("http://airavata.apache.org/schemas/wft/2011/08", "description", "ns"));
+      //  OMElement executeResponse=documentElement.getFirstChildWithName(new QName("http://www.opengis.net/wps/1.0.0", "ExecuteResponse", "ns"));
+        OMElement processOuts=omElement.getFirstChildWithName(new QName("http://www.opengis.net/wps/1.0.0","ProcessOutputs","ns"));
+        OMElement outPut=processOuts.getFirstElement();
+        OMElement data=outPut.getFirstChildWithName(new QName("http://www.opengis.net/wps/1.0.0","Data","ns"));
+        OMElement complexData=data.getFirstElement();
+        OMElement featureCollection=complexData.getFirstElement();
+        OMFactory factory= OMAbstractFactory.getOMFactory();
+        OMNamespace poNs= factory.createOMNamespace("http //www.w3.org/1999/xhtml", "xmlns");
+       // featureCollection.addAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance",null);
+            /*File file = new File("gmlOut.xml");
+            BufferedWriter output = new BufferedWriter(new FileWriter(file));
+            output.write(featureCollection.toString());
+            output.close();*/
+        FileHandle.write(featureCollection.toString(),args[0]);
+
+
+        //System.out.println(featureCollection.toString());
     }
 }
