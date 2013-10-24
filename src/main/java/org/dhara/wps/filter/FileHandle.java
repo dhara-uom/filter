@@ -12,7 +12,7 @@ import java.util.Scanner;
  */
 public class FileHandle {
 
-    private static String fileName = "Filter.xml";
+    private static String fileName = "output.xml";
 
 
     public static String read( String filePath){
